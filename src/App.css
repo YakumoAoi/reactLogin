@@ -1,0 +1,23 @@
+.App {
+    color: #333;
+    background-color: #fff;
+    max-height: 800px;
+    min-width: 500px;
+    padding: 2em 1.5em;
+    margin: 2em;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+    box-shadow: 0 0 2em rgba(0, 0, 0, 0.2);
+}
+
+.inputItem {
+    margin-top: 10px;
+}
+
+.App .inputItem li:nth-child(odd) {
+    background-color: #eee;
+}
+
+.App .inputItem li:nth-child(even) {
+    background-color: transparent;
+}

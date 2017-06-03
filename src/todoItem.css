@@ -1,0 +1,16 @@
+.todoitem {
+    padding: 0.5em;
+    display: flex;
+    align-items: center;
+}
+
+.input {
+    flex-grow: 1;
+    padding: 0 0.5em;
+}
+
+.todoitem button {
+    font-size: 14px;
+    padding: 3px 5px;
+    color: #444;
+}
