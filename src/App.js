@@ -40,7 +40,6 @@ class App extends Component {
 		)
 	}
 	componentDidUpdate(){
-		local.save('todoList',this.state.todoList)
 	}
 	addTodo(event){
 		if(!event.target.value){
