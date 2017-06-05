@@ -4,21 +4,14 @@ import './reset.css'
 import './App.css';
 import TodoItem from './todoItem'
 import TodoInput from './todoInput'
-import * as local from './localStorage'
-
-// var APP_ID = 'bgqkvywT0kEB881JDKJwgqIS-gzGzoHsz';
-// var APP_KEY = 'vCwj1qbJtDaiwmQSulSq9ohj';
-// AV.init({
-//   appId: APP_ID,
-//   appKey: APP_KEY
-// });
+import UserDialog from './userDialog'
 
 class App extends Component {
 	constructor(props){
 		super(props)
 		this.state={
 			newTodo:"test",
-			todoList:JSON.parse(local.load('todoList'))||[]
+			todoList:[]
 		}
 	}
 	render() {
@@ -42,6 +35,7 @@ class App extends Component {
 				<ol className="inputItem">
 					{todos}
 				</ol>
+				<UserDialog/>
       		</div>
 		)
 	}
