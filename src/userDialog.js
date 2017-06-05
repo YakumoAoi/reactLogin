@@ -5,7 +5,11 @@ class userDialog extends React.Component{
     constructor(props){
         super(props)
         this.state={
-            selected:'signIn'
+            selected:'signIn',
+            formDate:{
+                user:'',
+                password:''
+            }
         }
     }
     switch(e){
@@ -13,7 +17,47 @@ class userDialog extends React.Component{
             selected:e.target.value
         })
     }
+    signIn(e){}
+    signUp(e){}
+    changeForm(key,e){
+        let stateCopy=JSON.parse(JSON.stringify(this.state))
+        stateCopy.formDate[key]=e.target.value
+        this.setState(stateCopy)
+    }
     render(){
+        let signInForm=
+            <form className="login" onSubmit={this.signIn.bind(this)}>
+                <div className="row">
+                    <label>用户名</label>
+                    <input type="text"  value={this.state.formDate.user} onChange={this.changeForm.bind(this,"user")}/>
+                </div>
+                <div className="row">
+                    <label>密码</label>
+                    <input type="password" value={this.state.formDate.password} onChange={this.changeForm.bind(this,"password")}/>
+                </div>
+                    <div className="row actions">
+                    <button type="submit">登陆</button>
+                </div>
+            </form>
+        let signUpForm=                        
+            <form className="register" onSubmit={this.signUp.bind(this)}>
+                <div className="row">
+                    <label>用户名</label>
+                    <input type="text"  value={this.state.formDate.user} onChange={this.changeForm.bind(this,"user")}/>
+                </div>
+                <div className="row">
+                    <label>密码</label>
+                    <input type="password" value={this.state.formDate.password} onChange={this.changeForm.bind(this,"password")}/>
+                </div>
+                <div className="row confirm">
+                    <label>确认密码</label>
+                    <input type="password" />
+                </div>
+                <div className="row actions">
+                    <button type="submit">注册</button>
+                </div>
+            </form>
+
         return (
             <div className="dialog-container">
                 <div className="dialog">
@@ -22,36 +66,8 @@ class userDialog extends React.Component{
                         <label><input type="radio" value="signUp" checked={this.state.selected==="signUp"} onChange={this.switch.bind(this)}/>注册</label>
                     </nav>
                     <div className="pane">
-                        <form className="login">
-                            <div className="row">
-                                <label>用户名</label>
-                                <input type="text"/>
-                            </div>
-                            <div className="row">
-                                <label>密码</label>
-                                <input type="password"/>
-                            </div>
-                            <div className="row actions">
-                                <button type="submit">登陆</button>
-                            </div>
-                        </form>
-                        <form className="register">
-                            <div className="row">
-                                <label>用户名</label>
-                                <input type="text"/>
-                            </div>
-                            <div className="row">
-                                <label>密码</label>
-                                <input type="password"/>
-                            </div>
-                            <div className="row confirm">
-                                <label>确认密码</label>
-                                <input type="password"/>
-                            </div>
-                            <div className="row actions">
-                                <button type="submit">注册</button>
-                            </div>
-                        </form>
+                        {this.state.selected==="signIn"?signInForm:null}
+                        {this.state.selected==="signUp"?signUpForm:null}
                     </div>
                 </div>
             </div>

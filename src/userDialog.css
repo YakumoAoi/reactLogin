@@ -26,7 +26,7 @@
     margin-right: 0.2em;
 }
 
-.in {
+.dialog nav label {
     cursor: pointer;
 }
 
@@ -86,8 +86,4 @@
 .dialog .actions {
     margin: 15px 0;
     text-align: center;
-}
-
-.register {
-    display: none;
 }
