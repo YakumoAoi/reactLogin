@@ -1,5 +1,6 @@
 import React from 'react'
 import './userDialog.css'
+import {signUp} from './leanCloud'
 
 class userDialog extends React.Component{
     constructor(props){
@@ -7,7 +8,7 @@ class userDialog extends React.Component{
         this.state={
             selected:'signIn',
             formDate:{
-                user:'',
+                username:'',
                 password:''
             }
         }
@@ -18,7 +19,17 @@ class userDialog extends React.Component{
         })
     }
     signIn(e){}
-    signUp(e){}
+    signUp(e){
+        e.preventDefault()
+        let {password,username}=this.state.formDate
+        let success=(username)=>{
+            this.props.onSignUp.call(null,username)
+        }
+        let error=(error)=>{
+            console.log(error)
+        }
+        signUp(username,password,success,error)
+    }
     changeForm(key,e){
         let stateCopy=JSON.parse(JSON.stringify(this.state))
         stateCopy.formDate[key]=e.target.value
@@ -29,7 +40,7 @@ class userDialog extends React.Component{
             <form className="login" onSubmit={this.signIn.bind(this)}>
                 <div className="row">
                     <label>用户名</label>
-                    <input type="text"  value={this.state.formDate.user} onChange={this.changeForm.bind(this,"user")}/>
+                    <input type="text"  value={this.state.formDate.username} onChange={this.changeForm.bind(this,"username")}/>
                 </div>
                 <div className="row">
                     <label>密码</label>
@@ -43,7 +54,7 @@ class userDialog extends React.Component{
             <form className="register" onSubmit={this.signUp.bind(this)}>
                 <div className="row">
                     <label>用户名</label>
-                    <input type="text"  value={this.state.formDate.user} onChange={this.changeForm.bind(this,"user")}/>
+                    <input type="text"  value={this.state.formDate.username} onChange={this.changeForm.bind(this,"username")}/>
                 </div>
                 <div className="row">
                     <label>密码</label>
