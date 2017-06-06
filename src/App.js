@@ -5,12 +5,13 @@ import './App.css';
 import TodoItem from './todoItem'
 import TodoInput from './todoInput'
 import UserDialog from './userDialog'
+import {getCurrentUser,logOut} from './leanCloud'
 
 class App extends Component {
 	constructor(props){
 		super(props)
 		this.state={
-			user:{},
+			user: getCurrentUser() || {},
 			newTodo:"test",
 			todoList:[]
 		}
@@ -28,6 +29,7 @@ class App extends Component {
 		return (
 			<div className="App">
 				<h1>{this.state.user.username||"我"}的待办</h1>
+				{this.state.user.id ? <button onClick={this.logOut.bind(this)}>登出</button> : null}
 				<div className="inputWarp">
 					<TodoInput content={this.state.newTodo}
 					onsubmit={this.addTodo.bind(this)}
@@ -36,15 +38,22 @@ class App extends Component {
 				<ol className="inputItem">
 					{todos}
 				</ol>
-				<UserDialog onSignUp={this.signUp.bind(this)}/>
+				{this.state.user.id ? null : <UserDialog onSignUp={this.signUp.bind(this)}/>}
       		</div>
 		)
 	}
 	componentDidUpdate(){
 	}
-	signUp(user){
-		this.state.user=user
-		this.setState(this.state.user)
+	logOut(){
+		logOut()
+		let copyState=JSON.parse(JSON.stringify(this.state))
+		copyState.user={}
+		this.setState(copyState)
+	}
+	signUp(usr){
+		let copyState=JSON.parse(JSON.stringify(this.state))
+		copyState.user=usr
+		this.setState(copyState)
 	}
 	addTodo(event){
 		if(!event.target.value){
