@@ -6,6 +6,7 @@ import TodoItem from './todoItem'
 import TodoInput from './todoInput'
 import UserDialog from './userDialog'
 import {getCurrentUser,logOut} from './leanCloud'
+import deepCopy from './deepCopy'
 
 class App extends Component {
 	constructor(props){
@@ -38,20 +39,18 @@ class App extends Component {
 				<ol className="inputItem">
 					{todos}
 				</ol>
-				{this.state.user.id ? null : <UserDialog onSignUp={this.signUp.bind(this)}/>}
+				{this.state.user.id ? null : <UserDialog onSignUp={this.login.bind(this)} onSignIn={this.login.bind(this)}/>}
       		</div>
 		)
 	}
-	componentDidUpdate(){
-	}
 	logOut(){
 		logOut()
-		let copyState=JSON.parse(JSON.stringify(this.state))
+		let copyState=deepCopy(this.state)
 		copyState.user={}
 		this.setState(copyState)
 	}
-	signUp(usr){
-		let copyState=JSON.parse(JSON.stringify(this.state))
+	login(usr){
+		let copyState=deepCopy(this.state)
 		copyState.user=usr
 		this.setState(copyState)
 	}

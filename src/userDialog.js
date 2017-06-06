@@ -1,6 +1,7 @@
 import React from 'react'
 import './userDialog.css'
-import {signUp} from './leanCloud'
+import {signUp,signIn} from './leanCloud'
+import deepCopy from './deepCopy'
 
 class userDialog extends React.Component{
     constructor(props){
@@ -10,7 +11,8 @@ class userDialog extends React.Component{
             formDate:{
                 username:'',
                 password:''
-            }
+            },
+            checkPassword:''
         }
     }
     switch(e){
@@ -18,21 +20,58 @@ class userDialog extends React.Component{
             selected:e.target.value
         })
     }
-    signIn(e){}
+    signIn(e){
+         e.preventDefault()
+        let {password,username}=this.state.formDate
+        let success=(username)=>{
+            this.props.onSignIn.call(null,username)
+        }
+        let error=(error)=>{
+            switch(error.code){
+                case 210:
+                alert("用户名和密码不匹配")
+                break
+                case 211:
+                alert("用户名不存在")
+                break
+                default:
+                alert(error)
+            }
+        }
+        signIn(username,password,success,error)
+    }
     signUp(e){
         e.preventDefault()
         let {password,username}=this.state.formDate
+        if(!username){return alert("请输入用户名")}
+        if(!password){return alert("请输入密码")}
+        let checkPassword=this.state.checkPassword
+        if(password!==checkPassword){
+            return alert("两次密码不一致")
+        }
         let success=(username)=>{
             this.props.onSignUp.call(null,username)
         }
         let error=(error)=>{
-            console.log(error)
+            switch(error.code){
+                case 202:
+                alert("用户名已存在")
+                break
+                default:
+                alert(error)
+            }
+
         }
         signUp(username,password,success,error)
     }
     changeForm(key,e){
-        let stateCopy=JSON.parse(JSON.stringify(this.state))
+        let stateCopy=deepCopy(this.state)
         stateCopy.formDate[key]=e.target.value
+        this.setState(stateCopy)
+    }
+    checkPassword(e){
+        let stateCopy=deepCopy(this.state)
+        stateCopy.checkPassword=e.target.value
         this.setState(stateCopy)
     }
     render(){
@@ -62,7 +101,7 @@ class userDialog extends React.Component{
                 </div>
                 <div className="row confirm">
                     <label>确认密码</label>
-                    <input type="password" />
+                    <input type="password" value={this.state.checkPassword} onChange={this.checkPassword.bind(this)}/>
                 </div>
                 <div className="row actions">
                     <button type="submit">注册</button>

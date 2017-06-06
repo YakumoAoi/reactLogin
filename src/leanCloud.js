@@ -20,6 +20,18 @@ export function signUp(username, password, successFn, errorFn) {
         .catch((error) => {
             errorFn.call(null, error)
         })
+
+    return undefined
+}
+
+export function signIn(username, password, successFn, errorFn) {
+    AV.User.logIn(username, password).then((logined) => {
+            let user = getUserFromAVUser(logined)
+            successFn.call(null, user)
+        })
+        .catch((error) => {
+            errorFn.call(null, error)
+        })
     return undefined
 }
 
