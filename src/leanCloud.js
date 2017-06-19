@@ -71,6 +71,10 @@ export const todoModel = {
         todo.set('status', status)
         todo.set('title', title)
         todo.set('deleted', deleted)
+        let acl = new AV.ACL()
+        acl.getPublicReadAccess(false)
+        acl.getReadAccess(AV.user.current(), true)
+        todo.setACL()
         todo.save().then((response) => {
             successFn.call(null, response.id)
         }, (error) => {
@@ -78,7 +82,14 @@ export const todoModel = {
         })
     },
     update: () => {},
-    destory: () => {}
+    destory: (todoID, successFn, errorFn) => {
+        let todo = new AV.Object.createWithoutData('Todo', todoID)
+        todo.destory().then((response) => {
+            successFn && successFn(null)
+        }, (error) => {
+            errorFn && errorFn(null, error)
+        })
+    }
 }
 
 function getUserFromAVUser(AVuser) {
