@@ -83,8 +83,8 @@ export const todoModel = {
     },
     update: () => {},
     destory: (todoID, successFn, errorFn) => {
-        let todo = new AV.Object.createWithoutData('Todo', todoID)
-        todo.destory().then((response) => {
+        let todo = AV.Object.createWithoutData('Todo', todoID)
+        todo.destroy().then((response) => {
             successFn && successFn(null)
         }, (error) => {
             errorFn && errorFn(null, error)
