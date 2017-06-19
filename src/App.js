@@ -5,7 +5,7 @@ import './App.css';
 import TodoItem from './todoItem'
 import TodoInput from './todoInput'
 import UserDialog from './userDialog'
-import {getCurrentUser,logOut} from './leanCloud'
+import {getCurrentUser,logOut,Todo} from './leanCloud'
 import deepCopy from './deepCopy'
 import AV from './leanCloud'
 
@@ -59,11 +59,18 @@ class App extends Component {
 		if(!event.target.value){
 			return 0
 		}
-		this.state.todoList.push({
-			id:count(),
+		let newTodo={
 			title:event.target.value,
 			status:null,
 			deleted:false
+		}
+		Todo.create(newTodo,(id)=>{
+			newTodo.id=id
+			this.state.todoLIst.push(newTodo)
+			this.setState({
+				newTodo:'',
+				todoList: this.state.todoList
+			})
 		})
 		this.setState({
 			newTodo:'',
@@ -87,10 +94,3 @@ class App extends Component {
 }
 
 export default App;
-
-let id=0
-
-function count(){
-	id+=1
-	return id
-}
