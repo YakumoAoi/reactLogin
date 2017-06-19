@@ -53,6 +53,10 @@
     margin-left: -0.5em;
 }
 
+.register .row:nth-child(4) label {
+    margin-left: 0.5em;
+}
+
 .dialog input {
     border-radius: 3px;
     border: 1px solid #777;
@@ -65,6 +69,10 @@
 
 .dialog input[type=password] {
     margin-left: 1.48em;
+}
+
+.register input[type=email] {
+    margin-left: 1.5em;
 }
 
 .forgetPassword input {

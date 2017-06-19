@@ -21,7 +21,6 @@ export function signUp(email, username, password, successFn, errorFn) {
         .catch((error) => {
             errorFn.call(null, error)
         })
-
     return undefined
 }
 
@@ -43,6 +42,14 @@ export function getCurrentUser() {
 
 export function logOut() {
     AV.User.logOut()
+    return undefined
+}
+export function sendResetPasswordEmail(email, successFn, failFn) {
+    AV.User.requestPasswordReset(email).then(() => {
+        return successFn.call()
+    }).catch((error) => {
+        return failFn.call(null, error)
+    })
     return undefined
 }
 

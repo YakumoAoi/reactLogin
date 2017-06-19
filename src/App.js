@@ -7,6 +7,20 @@ import TodoInput from './todoInput'
 import UserDialog from './userDialog'
 import {getCurrentUser,logOut} from './leanCloud'
 import deepCopy from './deepCopy'
+import AV from './leanCloud'
+
+ var TodoFolder = AV.Object.extend('TodoFolder');
+  // 新建对象
+  var todoFolder = new TodoFolder();
+  // 设置名称
+  todoFolder.set('name','工作');
+  // 设置优先级
+  todoFolder.set('priority',1);
+  todoFolder.save().then(function (todo) {
+    console.log('objectId is ' + todo.id);
+  }, function (error) {
+    console.error(error);
+  });
 
 class App extends Component {
 	constructor(props){

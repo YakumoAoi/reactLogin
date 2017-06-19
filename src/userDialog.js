@@ -1,7 +1,9 @@
 import React from 'react'
 import './userDialog.css'
-import {signUp,signIn} from './leanCloud'
+import {signUp,signIn,sendResetPasswordEmail} from './leanCloud'
 import deepCopy from './deepCopy'
+import SignInOrSignUp from './signInOrSignUp'
+import forgetPasswordForm from './forgetPassword'
 
 class userDialog extends React.Component{
     constructor(props){
@@ -82,77 +84,49 @@ class userDialog extends React.Component{
         stateCopy.loginPanel=key
         this.setState(stateCopy)
     }
+    resetPassword(e){
+        e.preventDefault()
+        let email=this.state.formDate.email
+        let success=()=>{
+            return alert('重置邮件已发送，请注意查收')
+        }
+        let fail=(error)=>{
+            switch(error.code){
+                case 1:
+                alert(error)
+                break
+                case 205:
+                alert("邮箱对应的账号不存在")
+                break
+                case 204:
+                alert("请输入邮箱账号")
+                break
+                default:
+                alert(error)
+            }
+        }
+        sendResetPasswordEmail(email,success,fail)
+    }
     render(){
-        let signInForm=
-            <form className="login" onSubmit={this.signIn.bind(this)}>
-                <div className="row">
-                    <label>用户名</label>
-                    <input type="text"  value={this.state.formDate.username} onChange={this.changeForm.bind(this,"username")}/>
-                </div>
-                <div className="row">
-                    <label>密码</label>
-                    <input type="password" value={this.state.formDate.password} onChange={this.changeForm.bind(this,"password")}/>
-                </div>
-                <div className="row actions">
-                    <button type="submit">登陆</button>
-                    <a href="#" onClick={this.switchPanel.bind(this,'forgetPassword')}>忘记密码了吗？</a>
-                </div>
-
-            </form>
-        let signUpForm=                        
-            <form className="register" onSubmit={this.signUp.bind(this)}>
-                <div className="row">
-                    <label>用户名</label>
-                    <input type="text"  value={this.state.formDate.username} onChange={this.changeForm.bind(this,"username")}/>
-                </div>
-                <div className="row">
-                    <label>密码</label>
-                    <input type="password" value={this.state.formDate.password} onChange={this.changeForm.bind(this,"password")}/>
-                </div>
-                <div className="row confirm">
-                    <label>确认密码</label>
-                    <input type="password" value={this.state.checkPassword} onChange={this.checkPassword.bind(this)}/>
-                </div>
-                <div className="row">
-                    <label>邮箱</label>
-                    <input type="email" value={this.state.formDate.email} onChange={this.changeForm.bind(this,"email")}/>
-                </div>
-                <div className="row actions">
-                    <button type="submit">注册</button>
-                </div>
-            </form>
-        let signInOrSignUp=
-            <div>
-                <nav onChange={this.switch.bind(this)}>
-                    <label><input type="radio" value="signIn" checked={this.state.selected==="signIn"} onChange={this.switch.bind(this)}/>登陆</label>
-                    <label><input type="radio" value="signUp" checked={this.state.selected==="signUp"} onChange={this.switch.bind(this)}/>注册</label>
-                </nav>
-                <div className="pane">
-                    {this.state.selected==="signIn"?signInForm:null}
-                    {this.state.selected==="signUp"?signUpForm:null}
-                </div>
-            </div>
-        let forgetPassword=
-            <div className="forgetPassword">
-                <h3>
-                    重置密码
-                </h3>
-                <form>
-                    <div className="row">
-                        <label>邮箱</label>
-                        <input type="email" value={this.state.formDate.email} onChange={this.changeForm.bind(this,"email")}/>
-                    </div>
-                    <div className="row actions">
-                        <button type="submit">找回密码</button>
-                        <a href="#" onClick={this.switchPanel.bind(this,'signInOrSignUp')}>返回登陆</a>
-                    </div>
-                </form>
-            </div>
         return (
             <div className="dialog-container">
                 <div className="dialog">
-                    {this.state.loginPanel==="signInOrSignUp"?signInOrSignUp:null}
-                    {this.state.loginPanel==="forgetPassword"?forgetPassword:null}
+                    {this.state.loginPanel==="signInOrSignUp"?<SignInOrSignUp
+                    copyState={this.state}
+                    onChangePanel={this.switch.bind(this)}
+                    onChangeForm={this.changeForm.bind(this)}
+                    onSignIn={this.signIn.bind(this)}
+                    onSwitchPanel={this.switchPanel.bind(this)}
+                    onSignUp={this.signUp.bind(this)}
+                    onCheckPassword={this.checkPassword.bind(this)}
+                    />:null}
+                    {this.state.loginPanel==="forgetPassword"?
+                    <forgetPasswordForm
+                    formDate={this.state.formDate}
+                    onChangeForm={this.changeForm.bind(this)}
+                    onResetPasswrod={this.resetPassword.bind(this)}
+                    onSwitchPanel={this.switchPanel.bind(this)}
+                    />:null}
                 </div>
             </div>
         )
