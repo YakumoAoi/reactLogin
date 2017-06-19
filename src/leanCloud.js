@@ -48,15 +48,26 @@ export function sendResetPasswordEmail(email, successFn, failFn) {
     AV.User.requestPasswordReset(email).then(() => {
         return successFn.call()
     }).catch((error) => {
-        return errorFn.call(null, error)
+        return failFn.call(null, error)
     })
     return undefined
 }
 
-export const todo = {
+export const todoModel = {
+    getByUser: (user, successFn, errorFn) => {
+        let query = new AV.Query('Todo')
+        query.find().then((response) => {
+            let array = response.map((item) => {
+                return { id: item.id, ...item.attributes }
+            })
+            successFn.call(null, array)
+        }), (error) => {
+            errorFn && errorFn(null, error)
+        }
+    },
     create: ({ status, title, deleted }, successFn, errorFn) => {
-        var Todo = AV.Object.extend('Todo')
-        var todo = new Todo()
+        let Todo = AV.Object.extend('Todo')
+        let todo = new Todo()
         todo.set('status', status)
         todo.set('title', title)
         todo.set('deleted', deleted)

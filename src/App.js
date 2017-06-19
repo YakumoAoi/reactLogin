@@ -5,9 +5,8 @@ import './App.css';
 import TodoItem from './todoItem'
 import TodoInput from './todoInput'
 import UserDialog from './userDialog'
-import {getCurrentUser,logOut,Todo} from './leanCloud'
+import {getCurrentUser,logOut,todoModel} from './leanCloud'
 import deepCopy from './deepCopy'
-import AV from './leanCloud'
 
 class App extends Component {
 	constructor(props){
@@ -17,6 +16,12 @@ class App extends Component {
 			newTodo:"test",
 			todoList:[]
 		}
+		let user=getCurrentUser()
+		todoModel.getByUser(user,(todo)=>{
+			let copyState=JSON.parse(JSON.stringify(this.state))
+			copyState.todoList=todo
+			this.setState(copyState)
+		})
 	}
 	render() {
 		let todos=this.state.todoList.filter((item)=>!item.deleted)
@@ -61,20 +66,19 @@ class App extends Component {
 		}
 		let newTodo={
 			title:event.target.value,
-			status:null,
+			status:'',
 			deleted:false
 		}
-		Todo.create(newTodo,(id)=>{
+		todoModel.create(newTodo,(id)=>{
 			newTodo.id=id
-			this.state.todoLIst.push(newTodo)
+			this.state.todoList.push(newTodo)
 			this.setState({
 				newTodo:'',
 				todoList: this.state.todoList
 			})
-		})
-		this.setState({
-			newTodo:'',
-			todoList:this.state.todoList
+			console.log(this.state.todoList)
+		},(error)=>{
+			console.log(error)
 		})
 	}
 	changetitle(event){
