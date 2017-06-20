@@ -17,11 +17,13 @@ class App extends Component {
 			todoList:[]
 		}
 		let user=getCurrentUser()
-		todoModel.getByUser(user,(todo)=>{
-			let copyState=JSON.parse(JSON.stringify(this.state))
-			copyState.todoList=todo
-			this.setState(copyState)
-		})
+		if(user){
+			todoModel.getByUser(user,(todo)=>{
+				let copyState=JSON.parse(JSON.stringify(this.state))
+				copyState.todoList=todo
+				this.setState(copyState)
+			})
+		}
 	}
 	render() {
 		let todos=this.state.todoList.filter((item)=>!item.deleted)
@@ -71,12 +73,12 @@ class App extends Component {
 		}
 		todoModel.create(newTodo,(id)=>{
 			newTodo.id=id
+			console.log(id)
 			this.state.todoList.push(newTodo)
 			this.setState({
 				newTodo:'',
 				todoList: this.state.todoList
 			})
-			console.log(this.state.todoList)
 		},(error)=>{
 			console.log(error)
 		})
@@ -88,8 +90,14 @@ class App extends Component {
 		})
 	}
 	toggle(event,todo){
+		let previousStatus=todo.state
 		todo.status = todo.status === 'completed' ? '' : 'completed'
-		this.setState(this.state)
+		todoModel.update(todo,()=>{
+			this.setState(this.state)
+		},(error)=>{
+			todo.state=previousStatus
+			this.setState(this.state)
+		})
 	}
 	delete(event,todo){
 		todoModel.destory(todo.id,()=>{

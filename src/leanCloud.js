@@ -54,41 +54,50 @@ export function sendResetPasswordEmail(email, successFn, failFn) {
 }
 
 export const todoModel = {
-    getByUser: (user, successFn, errorFn) => {
+    getByUser(user, successFn, errorFn) {
         let query = new AV.Query('Todo')
+        query.equalTo('deleted', false)
         query.find().then((response) => {
             let array = response.map((item) => {
                 return { id: item.id, ...item.attributes }
             })
             successFn.call(null, array)
-        }), (error) => {
+        }, (error) => {
+            console.log(error)
             errorFn && errorFn(null, error)
-        }
+        })
     },
-    create: ({ status, title, deleted }, successFn, errorFn) => {
+    create({ status, title, deleted }, successFn, errorFn) {
         let Todo = AV.Object.extend('Todo')
         let todo = new Todo()
         todo.set('status', status)
         todo.set('title', title)
         todo.set('deleted', deleted)
         let acl = new AV.ACL()
-        acl.getPublicReadAccess(false)
-        acl.getReadAccess(AV.user.current(), true)
-        todo.setACL()
+        acl.setPublicReadAccess(false)
+        acl.setReadAccess(AV.User.current(), true)
+        acl.setWriteAccess(AV.User.current(), true)
+        todo.setACL(acl)
         todo.save().then((response) => {
             successFn.call(null, response.id)
         }, (error) => {
             errorFn && errorFn(null, error)
         })
     },
-    update: () => {},
-    destory: (todoID, successFn, errorFn) => {
-        let todo = AV.Object.createWithoutData('Todo', todoID)
-        todo.destroy().then((response) => {
-            successFn && successFn(null)
+    update({ id, status, title, deleted }, successFn, errorFn) {
+        let todo = AV.Object.createWithoutData('todo', id)
+        status !== undefined && todo.set('status', status)
+        title !== undefined && todo.set('title', title)
+        deleted !== undefined && todo.set('deleted', deleted)
+        console.log(todo)
+        todo.save().then((response) => {
+            successFn && successFn.call(null)
         }, (error) => {
-            errorFn && errorFn(null, error)
+            errorFn && errorFn.call(null, error)
         })
+    },
+    destory(todoID, successFn, errorFn) {
+        todoModel.update({ id: todoID, deleted: true, status: undefined, title: undefined }, successFn, errorFn)
     }
 }
 
