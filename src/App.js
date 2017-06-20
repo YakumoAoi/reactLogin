@@ -73,7 +73,9 @@ class App extends Component {
 		}
 		todoModel.create(newTodo,(id)=>{
 			newTodo.id=id
-			console.log(id)
+			console.log('新添加的todo的deleted属性的值是'+''+newTodo.deleted)
+			console.log('新添加的todo的标题是'+''+newTodo.title)
+			console.log('新添加的todo的id是'+''+id)
 			this.state.todoList.push(newTodo)
 			this.setState({
 				newTodo:'',
