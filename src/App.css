@@ -8,6 +8,7 @@
     border: 1px solid #aaa;
     border-radius: 5px;
     box-shadow: 0 0 2em rgba(0, 0, 0, 0.2);
+    font-family: "微软雅黑", '黑体', Arial, Helvetica, sans-serif
 }
 
 .App>h1,

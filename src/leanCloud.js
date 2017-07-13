@@ -17,6 +17,7 @@ export function signUp(email, username, password, successFn, errorFn) {
     user.signUp().then((hasSignUp) => {
             let user = getUserFromAVUser(hasSignUp)
             successFn.call(null, user)
+            window.location.reload()
         })
         .catch((error) => {
             errorFn.call(null, error)
@@ -28,6 +29,8 @@ export function signIn(username, password, successFn, errorFn) {
     AV.User.logIn(username, password).then((logined) => {
             let user = getUserFromAVUser(logined)
             successFn.call(null, user)
+            window.location.reload()
+
         })
         .catch((error) => {
             errorFn.call(null, error)
@@ -42,6 +45,7 @@ export function getCurrentUser() {
 
 export function logOut() {
     AV.User.logOut()
+    window.location.reload()
     return undefined
 }
 export function sendResetPasswordEmail(email, successFn, failFn) {
@@ -77,8 +81,6 @@ export const todoModel = {
         acl.setPublicReadAccess(false)
         acl.setReadAccess(AV.User.current(), true)
         acl.setWriteAccess(AV.User.current(), true)
-        console.log('ACL设置')
-        console.log(acl)
         todo.setACL(acl)
         todo.save().then((response) => {
             successFn.call(null, response.id)
@@ -87,17 +89,10 @@ export const todoModel = {
         })
     },
     update({ id, status, title, deleted }, successFn, errorFn) {
-        console.log('更新的todo的id' + '' + id)
-        let todo = AV.Object.createWithoutData('todo', id)
+        let todo = AV.Object.createWithoutData('Todo', id)
         status !== undefined && todo.set('status', status)
         title !== undefined && todo.set('title', title)
         deleted !== undefined && todo.set('deleted', deleted)
-        console.log('更新的todo的属性的新值Deleted')
-        console.log(todo.attributes.deleted)
-        console.log('更新设置')
-        console.log(todo)
-        console.log('更新操作的结果')
-        console.log(todo.save())
         todo.save().then((response) => {
             successFn && successFn.call(null)
         }, (error) => {
@@ -106,9 +101,6 @@ export const todoModel = {
         })
     },
     destory(todoID, successFn, errorFn) {
-        console.log('删除的todo的ID' + '' + todoID)
-        console.log('todo增删改函数')
-        console.log(todoModel)
         todoModel.update({ id: todoID, deleted: true }, successFn, errorFn)
     }
 }
